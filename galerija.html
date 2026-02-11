@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="lt" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerija | Baldai.lt | Nestandartinių baldų projektavimas ir gamyba</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #080808; 
+            color: #fafafa;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-syne { font-family: 'Syne', sans-serif; }
+        
+        /* Premium Textures & Overlays */
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.04; pointer-events: none; z-index: 99;
+        }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .bento-item { 
+            position: relative; 
+            overflow: hidden; 
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .bento-item:hover { 
+            border-color: rgba(166, 124, 82, 0.4); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .bento-item > * { position: relative; z-index: 1; }
+
+        .text-gradient { 
+            background: linear-gradient(135deg, #fff 0%, #A67C52 100%); 
+            -webkit-background-clip: text; 
+            background-clip: text;
+            -webkit-text-fill-color: transparent; 
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 0;
+            background-color: #A67C52;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        section { scroll-margin-top: 80px; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #080808; }
+        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A67C52; }
+    </style>
+</head>
+<body x-data="{ 
+    scrolled: false, 
+    mobileMenu: false,
+    lightbox: { open: false, img: '', title: '' }
+}" 
+@scroll.window="scrolled = (window.pageYOffset > 50)"
+x-init="$watch('lightbox.open', value => {
+    if (value) document.body.classList.add('overflow-hidden');
+    else document.body.classList.remove('overflow-hidden');
+})"
+class="overflow-x-hidden selection:bg-[#A67C52] selection:text-white">
+    <div class="grain"></div>
+
+    <!-- Navigacija -->
+    <header :class="scrolled ? 'bg-black/80 backdrop-blur-lg shadow-2xl' : 'bg-transparent'" class="fixed w-full z-50 transition-all duration-500">
+        <!-- Top Bar -->
+        <div x-show="!scrolled" x-collapse.duration.500ms class="hidden md:block border-b border-white/5 bg-black/20 px-6 lg:px-20">
+            <div class="max-w-[1800px] mx-auto py-3 flex justify-between items-center text-[10px] uppercase tracking-[0.4em] font-bold text-gray-400">
+                <div class="flex gap-10">
+                    <a href="tel:+37067854277" class="hover:text-[#A67C52] transition-colors flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 text-[#A67C52]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        +370 678 54277
+                    </a>
+                    <a href="mailto:info@baldai.lt" class="hover:text-[#A67C52] transition-colors flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 text-[#A67C52]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        info@baldai.lt
+                    </a>
+                </div>
+                <div class="flex gap-8 text-[9px]">
+                    <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                    <a href="#" class="hover:text-white transition-colors">Facebook</a>
+                </div>
+            </div>
+        </div>
+
+        <nav :class="scrolled ? 'py-4' : 'py-10'" class="transition-all duration-500 px-6 lg:px-20">
+            <div class="max-w-[1800px] mx-auto flex justify-between items-center">
+                <a href="index.html" class="group flex items-center gap-3">
+                    <div class="relative w-10 h-10 flex items-center justify-center border border-white/20 overflow-hidden transition-all duration-500 group-hover:border-[#A67C52]">
+                        <span class="text-xl font-syne font-800 tracking-tighter z-10 text-white">B</span>
+                        <div class="absolute inset-0 bg-[#A67C52] translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    </div>
+                    <span class="text-xl font-syne font-800 tracking-[0.2em] uppercase text-white">ALDAI.LT</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-12 text-[10px] uppercase tracking-[0.4em] font-semibold items-center">
+                    <a href="index.html" class="nav-link text-white hover:text-[#A67C52]">Pradžia</a>
+                    <a href="galerija.html" class="text-[#A67C52]">Galerija</a>
+                    <a href="index.html#paslaugos" class="nav-link text-white hover:text-[#A67C52]">Paslaugos</a>
+                    <a href="index.html#apie" class="nav-link text-white hover:text-[#A67C52]">Apie mus</a>
+                    <a href="index.html#kontaktai" class="px-6 py-2 border border-[#A67C52] text-[#A67C52] hover:bg-[#A67C52] hover:text-white transition-all duration-300">Susisiekti</a>
+                </div>
+
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-white">
+                    <div class="w-6 h-0.5 bg-current mb-1.5 transition-all" :class="mobileMenu ? 'rotate-45 translate-y-2' : ''"></div>
+                    <div class="w-6 h-0.5 bg-current mb-1.5 transition-all" :class="mobileMenu ? 'opacity-0' : ''"></div>
+                    <div class="w-6 h-0.5 bg-current transition-all" :class="mobileMenu ? '-rotate-45 -translate-y-2' : ''"></div>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobili Navigacija Slenkantis Meniu -->
+    <div x-show="mobileMenu" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[60] bg-black/95 flex flex-col items-center justify-center space-y-8 text-2xl font-syne font-bold uppercase tracking-widest md:hidden text-white"
+         x-cloak>
+        <button @click="mobileMenu = false" class="absolute top-8 right-8">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <a href="index.html" @click="mobileMenu = false" class="hover:text-[#A67C52] transition">Pradžia</a>
+        <a href="galerija.html" @click="mobileMenu = false" class="text-[#A67C52] transition">Galerija</a>
+        <a href="index.html#paslaugos" @click="mobileMenu = false" class="hover:text-[#A67C52] transition">Paslaugos</a>
+        <a href="index.html#apie" @click="mobileMenu = false" class="hover:text-[#A67C52] transition">Apie mus</a>
+        <a href="index.html#kontaktai" @click="mobileMenu = false" class="text-[#A67C52]">Susisiekti</a>
+    </div>
+
+    <!-- Antraštė -->
+    <section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img loading="eager" decoding="async" src="bg1.webp" alt="Galerijos fonas" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#080808]"></div>
+        </div>
+
+        <div class="relative z-10 px-6 lg:px-20 max-w-[1800px] mx-auto w-full">
+            <div class="max-w-4xl">
+                <h2 class="text-[10px] uppercase tracking-[0.5em] text-[#A67C52] font-bold mb-6 flex items-center gap-4">
+                    <span class="w-8 h-[1px] bg-[#A67C52]"></span>
+                    Portfolio
+                </h2>
+                <h1 class="text-6xl md:text-8xl font-syne font-800 leading-tight uppercase tracking-tighter mb-8 text-white">
+                    PROJEKTŲ <br> <span class="text-gradient">GALERIJA</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed font-light">
+                    Susipažinkite su mūsų atliktais darbais. Kiekvienas projektas – individualus sprendimas, pritaikytas kliento poreikiams ir erdvės galimybėms.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Darbų Galerija -->
+    <section id="projektai" class="py-12 px-6 lg:px-20 max-w-[1800px] mx-auto">
+        <div class="flex flex-wrap gap-4 mb-20">
+            <button class="px-8 py-3 bg-[#A67C52] text-white text-[10px] uppercase font-bold tracking-[0.3em] transition-all duration-300 shadow-[0_0_20px_rgba(166,124,82,0.2)]">Visi</button>
+            <button class="px-8 py-3 border border-white/5 text-gray-500 text-[10px] uppercase font-bold tracking-[0.3em] hover:border-[#A67C52] hover:text-[#A67C52] transition-all duration-300">Virtuvės</button>
+            <button class="px-8 py-3 border border-white/5 text-gray-500 text-[10px] uppercase font-bold tracking-[0.3em] hover:border-[#A67C52] hover:text-[#A67C52] transition-all duration-300">Svetainės</button>
+            <button class="px-8 py-3 border border-white/5 text-gray-500 text-[10px] uppercase font-bold tracking-[0.3em] hover:border-[#A67C52] hover:text-[#A67C52] transition-all duration-300">Miegamieji</button>
+            <button class="px-8 py-3 border border-white/5 text-gray-500 text-[10px] uppercase font-bold tracking-[0.3em] hover:border-[#A67C52] hover:text-[#A67C52] transition-all duration-300">Ofisai</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Projektas 1 -->
+            <div @click="lightbox.open = true; lightbox.img = 'vituve.webp'; lightbox.title = 'Minimalistinė pilka'" 
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="vituve.webp" alt="Moderni virtuvė" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Virtuvės baldai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Minimalistinė pilka</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 2 -->
+            <div @click="lightbox.open = true; lightbox.img = 'svetaine.webp'; lightbox.title = 'Ąžuolo akcentai'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="svetaine.webp" alt="Prabangi svetainė" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Svetainės baldai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Ąžuolo akcentai</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 3 -->
+            <div @click="lightbox.open = true; lightbox.img = 'spinta.webp'; lightbox.title = 'Tamsaus medžio harmonija'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="spinta.webp" alt="Miegamojo spinta" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Miegamasis</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Tamsaus medžio harmonija</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 4 -->
+            <div @click="lightbox.open = true; lightbox.img = 'pilka.webp'; lightbox.title = 'Moderni lofto erdvė'"
+                 class="group relative overflow-hidden aspect-square md:col-span-2 bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="pilka.webp" alt="Erdvi svetainė" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Visas interjeras</span>
+                    <h4 class="text-4xl md:text-5xl font-syne font-800 tracking-tight uppercase">Moderni lofto erdvė</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 5 -->
+            <div @click="lightbox.open = true; lightbox.img = 'minimali.webp'; lightbox.title = 'Minimalizmo estetika'"
+                 class="group relative overflow-hidden aspect-square bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="minimali.webp" alt="Modernus biuras" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Ofiso projektai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Minimalizmo estetika</h4>
+                </div>
+            </div>
+
+            <!-- Daugiau pavyzdžių (placeholderiai) -->
+            <div @click="lightbox.open = true; lightbox.img = 'backbone-4Ly61P3EWVY-unsplash.webp'; lightbox.title = 'Laiptų erdvės išnaudojimas'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="backbone-4Ly61P3EWVY-unsplash.webp" alt="Laiptų sprendimas" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Individualūs sprendimai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Laiptų erdvės išnaudojimas</h4>
+                </div>
+            </div>
+
+            <div @click="lightbox.open = true; lightbox.img = 'point3d-commercial-imaging-ltd-OEOMfq_S2yU-unsplash.webp'; lightbox.title = 'Elegantiška drėgnoms patalpoms'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="point3d-commercial-imaging-ltd-OEOMfq_S2yU-unsplash.webp" alt="Vonios baldai" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Vonios baldai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Elegantiška drėgnoms patalpoms</h4>
+                </div>
+            </div>
+
+            <div @click="lightbox.open = true; lightbox.img = 'caroline-badran-npDa5WorEO0-unsplash.webp'; lightbox.title = 'Žaismingas funkcionalumas'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="caroline-badran-npDa5WorEO0-unsplash.webp" alt="Vaikų kambarys" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Vaikų kambarys</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Žaismingas funkcionalumas</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 9 -->
+            <div @click="lightbox.open = true; lightbox.img = 'christian-mackie-euBmypOZUZA-unsplash.webp'; lightbox.title = 'Erdvės pojūtis'"
+                 class="group relative overflow-hidden aspect-square md:col-span-2 bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="christian-mackie-euBmypOZUZA-unsplash.webp" alt="Erdvus interjeras" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Visas interjeras</span>
+                    <h4 class="text-4xl md:text-5xl font-syne font-800 tracking-tight uppercase">Erdvės pojūtis</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 10 -->
+            <div @click="lightbox.open = true; lightbox.img = 'tamsus.webp'; lightbox.title = 'Tamsaus medžio tekstūra'"
+                 class="group relative overflow-hidden aspect-square bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="tamsus.webp" alt="Tamsi virtuvė" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Virtuvės baldai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Tamsaus medžio tekstūra</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 11 -->
+            <div @click="lightbox.open = true; lightbox.img = 'pyx-photography-bVJ3M4JFS0g-unsplash.webp'; lightbox.title = 'Modernus apšvietimas'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="pyx-photography-bVJ3M4JFS0g-unsplash.webp" alt="Apšvietimo sprendimai" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Individualūs sprendimai</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Modernus apšvietimas</h4>
+                </div>
+            </div>
+
+            <!-- Projektas 12 -->
+            <div @click="lightbox.open = true; lightbox.img = 'photo-1581093806997-124204d9fa9d.avif'; lightbox.title = 'Gamybos meistriškumas'"
+                 class="group relative overflow-hidden aspect-[4/5] bg-[#111] cursor-pointer border border-white/5 hover:border-[#A67C52]/30 transition-all duration-500">
+                <img loading="lazy" decoding="async" src="photo-1581093806997-124204d9fa9d.avif" alt="Gamybos procesas" class="w-full h-full object-cover transition duration-1000 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex flex-col justify-end p-10">
+                    <span class="text-[#A67C52] text-[10px] uppercase tracking-[0.4em] font-bold mb-3">Gamyba</span>
+                    <h4 class="text-3xl font-syne font-800 tracking-tight uppercase">Gamybos meistriškumas</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 border-t border-white/5 px-6 lg:px-20 bg-black">
+        <div class="max-w-[1800px] mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
+                <a href="index.html" class="group flex items-center gap-3">
+                    <div class="relative w-10 h-10 flex items-center justify-center border border-white/20 overflow-hidden transition-all duration-500 group-hover:border-[#A67C52]">
+                        <span class="text-xl font-syne font-800 tracking-tighter z-10 text-white">B</span>
+                        <div class="absolute inset-0 bg-[#A67C52] translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                    </div>
+                    <span class="text-xl font-syne font-800 tracking-[0.2em] uppercase text-white">ALDAI.LT</span>
+                </a>
+                
+                <p class="text-gray-500 text-sm tracking-widest uppercase">© 2026 „Baldai.lt“. Visos teisės saugomos.</p>
+                
+                <div class="flex gap-10">
+                    <a href="#" class="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 hover:text-[#A67C52] transition-colors">Instagram</a>
+                    <a href="#" class="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 hover:text-[#A67C52] transition-colors">Facebook</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div x-show="lightbox.open" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-8"
+         @keydown.escape.window="lightbox.open = false"
+         style="display: none;">
+        
+        <!-- Close Button -->
+        <button @click="lightbox.open = false" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110]">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <!-- Image Container -->
+        <div class="relative max-w-5xl w-full max-h-full flex flex-col items-center">
+            <img decoding="async" :src="lightbox.img" :alt="lightbox.title" 
+                 class="max-w-full max-h-[80vh] object-contain shadow-2xl"
+                 @click.away="lightbox.open = false">
+            
+            <div class="mt-6 text-center">
+                <h3 class="text-2xl md:text-3xl font-syne font-700 text-white" x-text="lightbox.title"></h3>
+                <p class="text-[#A67C52] text-sm tracking-widest uppercase mt-2">Individualūs baldai / Baldai.lt</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
